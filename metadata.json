@@ -1,0 +1,5 @@
+{
+  "name": "Tereos Magasins",
+  "description": "Internal marketplace for sharing industrial parts between sites to reduce CO2 impact. Features inventory management, reservations, and persistence.",
+  "requestFramePermissions": []
+}
