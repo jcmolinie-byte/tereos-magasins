@@ -303,12 +303,9 @@ function App() {
               <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2"><Leaf className="text-primary" />Calcul CO₂</h3>
               <button onClick={() => setShowCO2Modal(false)} className="text-gray-500 hover:text-white"><X size={20}/></button>
             </div>
-            <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">Le partage de pièces évite la fabrication de nouveaux équipements.</p>
-            <ul className="space-y-2 mb-6 text-sm text-gray-500 dark:text-gray-400">
-              {CATEGORIES.filter(c => c.value).map(c => (
-                <li key={c.name} className="flex justify-between border-b border-gray-100 dark:border-white/5 py-2"><span>{c.name}</span><span className="font-bold text-primary">~{c.value} kg</span></li>
-              ))}
-            </ul>
+            <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">Le site utilise une intelligence artificielle (Groq AI) pour estimer le CO₂ évité à chaque fois qu'une pièce est réutilisée plutôt que rachetée neuve.</p>
+            <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">Pour chaque pièce déposée, l'IA analyse le nom et la catégorie pour estimer la quantité de CO₂ qui aurait été émise lors de sa fabrication d'origine. Le total affiché représente le cumul de toutes les pièces disponibles en stock.</p>
+            <p className="text-amber-500 dark:text-amber-400 mb-6 text-sm leading-relaxed">⚠️ Ces valeurs sont des estimations basées sur les connaissances générales en Analyse du Cycle de Vie (ACV) des équipements industriels, pas des mesures précises.</p>
             <Button fullWidth onClick={() => setShowCO2Modal(false)}>Compris</Button>
           </div>
         </div>
