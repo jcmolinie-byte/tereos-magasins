@@ -178,19 +178,19 @@ function App() {
       <div className="bg-white dark:bg-dark-surface border-b border-gray-200 dark:border-white/5">
         <div className="max-w-7xl mx-auto px-4 overflow-x-auto">
           <nav className="flex items-center justify-between">
-            <div className="flex space-x-1">
+            <div className="flex space-x-1 overflow-x-auto scrollbar-hide">
               {[
                 { tab: 'stock', icon: <LayoutGrid size={18} />, label: 'Stock Disponible' },
                 { tab: 'deposit', icon: <PlusCircle size={18} />, label: 'Déposer une pièce' },
                 { tab: 'reservations', icon: <CheckCircle size={18} />, label: 'Réservations' },
               ].map(({ tab, icon, label }) => (
                 <button key={tab} onClick={() => { setCurrentTab(tab as TabView); setEditingItem(null); }}
-                  className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors whitespace-nowrap flex items-center gap-2 ${currentTab === tab ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}>
+                  className={`px-3 py-4 md:px-6 text-sm font-medium border-b-2 transition-colors whitespace-nowrap flex items-center gap-2 ${currentTab === tab ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'}`}>
                   {icon}{label}
                 </button>
               ))}
             </div>
-            <div className="hidden md:flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3 overflow-x-auto py-2 md:py-0">
               <div className="flex items-center gap-3 bg-amber-50 dark:bg-amber-500/10 px-4 py-2 rounded-full border border-amber-200 dark:border-amber-500/20">
                 <Euro size={14} className="text-amber-600 dark:text-amber-400" />
                 <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Montant d'achat évité :</span>
