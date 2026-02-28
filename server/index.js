@@ -1,91 +1,84 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs').promises;
-const path = require('path');
 const http = require('http');
+const mongoose = require('mongoose');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const DATA_DIR = path.join(__dirname, 'data');
-const STOCK_FILE = path.join(DATA_DIR, 'stock.json');
-const PHOTOS_DIR = path.join(DATA_DIR, 'photos');
 
 app.use(cors());
 app.use(express.json({ limit: '20mb' }));
-app.use('/photos', express.static(PHOTOS_DIR));
 
-const initDataDir = async () => {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.mkdir(PHOTOS_DIR, { recursive: true });
-  try { await fs.access(STOCK_FILE); }
-  catch { await fs.writeFile(STOCK_FILE, JSON.stringify({ stock: [] }, null, 2)); }
-};
+// Connexion MongoDB
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ MongoDB connecté'))
+  .catch(err => { console.error('❌ Erreur MongoDB:', err.message); process.exit(1); });
 
-const readData = async () => {
-  try { return JSON.parse(await fs.readFile(STOCK_FILE, 'utf-8')); }
-  catch { return { stock: [] }; }
-};
-const writeData = async (data) => {
-  try { await fs.writeFile(STOCK_FILE, JSON.stringify(data, null, 2)); return true; }
-  catch { return false; }
-};
+// Modèle Stock
+const StockSchema = new mongoose.Schema({
+  id:          { type: Number, unique: true },
+  piece:       String,
+  categorie:   String,
+  magasin:     String,
+  description: String,
+  photo:       String,
+  disponible:  { type: Boolean, default: true },
+  co2_kg:      Number,
+  createdAt:   { type: Date, default: Date.now },
+  updatedAt:   Date,
+}, { strict: false });
 
-const savePhoto = async (base64photo) => {
-  if (!base64photo || !base64photo.startsWith('data:image')) return null;
-  const base64Data = base64photo.replace(/^data:image\/[a-z]+;base64,/, '');
-  const ext = base64photo.match(/^data:image\/([a-z]+);base64,/)?.[1] || 'jpg';
-  const filename = `photo_${Date.now()}.${ext}`;
-  await fs.writeFile(path.join(PHOTOS_DIR, filename), base64Data, 'base64');
-  const baseUrl = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
-  return `${baseUrl}/photos/${filename}`;
-};
+const Stock = mongoose.model('Stock', StockSchema);
 
 // GET stock
 app.get('/api/stock', async (req, res) => {
-  const data = await readData();
-  res.json({ success: true, stock: data.stock });
+  try {
+    const items = await Stock.find().sort({ createdAt: -1 }).lean();
+    res.json({ success: true, stock: items });
+  } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
 // POST ajouter
 app.post('/api/stock', async (req, res) => {
   try {
-    const data = await readData();
     const { photo, ...rest } = req.body;
-    const photoUrl = await savePhoto(photo);
-    const newItem = { id: Date.now(), ...rest, photo: photoUrl, disponible: true, createdAt: new Date().toISOString() };
-    data.stock.unshift(newItem);
-    await writeData(data);
-    res.json({ success: true, item: newItem });
+    const newItem = new Stock({
+      id: Date.now(),
+      ...rest,
+      photo: photo || null,
+      disponible: true,
+      createdAt: new Date(),
+    });
+    await newItem.save();
+    res.json({ success: true, item: newItem.toObject() });
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
 // PUT modifier
 app.put('/api/stock/:id', async (req, res) => {
   try {
-    const data = await readData();
-    const index = data.stock.findIndex(i => i.id === parseInt(req.params.id));
-    if (index === -1) return res.status(404).json({ success: false, error: 'Non trouvé' });
     const { photo, ...rest } = req.body;
-    let photoUrl = data.stock[index].photo;
-    if (photo && photo.startsWith('data:image')) photoUrl = await savePhoto(photo);
-    else if (photo && photo.startsWith('http')) photoUrl = photo;
-    data.stock[index] = { ...data.stock[index], ...rest, photo: photoUrl, updatedAt: new Date().toISOString() };
-    await writeData(data);
-    res.json({ success: true, item: data.stock[index] });
+    const item = await Stock.findOne({ id: parseInt(req.params.id) });
+    if (!item) return res.status(404).json({ success: false, error: 'Non trouvé' });
+
+    const photoFinal = (photo && photo.startsWith('data:image')) ? photo
+                     : (photo && photo.startsWith('http'))       ? photo
+                     : item.photo;
+
+    const updated = await Stock.findOneAndUpdate(
+      { id: parseInt(req.params.id) },
+      { ...rest, photo: photoFinal, updatedAt: new Date() },
+      { new: true }
+    ).lean();
+    res.json({ success: true, item: updated });
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
 // DELETE
 app.delete('/api/stock/:id', async (req, res) => {
   try {
-    const data = await readData();
-    const item = data.stock.find(i => i.id === parseInt(req.params.id));
-    if (item?.photo) {
-      try { const fn = item.photo.split('/photos/')[1]; if (fn) await fs.unlink(path.join(PHOTOS_DIR, fn)); } catch {}
-    }
-    data.stock = data.stock.filter(i => i.id !== parseInt(req.params.id));
-    await writeData(data);
+    await Stock.findOneAndDelete({ id: parseInt(req.params.id) });
     res.json({ success: true });
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
@@ -93,13 +86,12 @@ app.delete('/api/stock/:id', async (req, res) => {
 // PATCH disponibilité
 app.patch('/api/stock/:id/toggle-availability', async (req, res) => {
   try {
-    const data = await readData();
-    const item = data.stock.find(i => i.id === parseInt(req.params.id));
+    const item = await Stock.findOne({ id: parseInt(req.params.id) });
     if (!item) return res.status(404).json({ success: false, error: 'Non trouvé' });
     item.disponible = !item.disponible;
-    item.updatedAt = new Date().toISOString();
-    await writeData(data);
-    res.json({ success: true, item });
+    item.updatedAt = new Date();
+    await item.save();
+    res.json({ success: true, item: item.toObject() });
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
@@ -152,6 +144,7 @@ app.post('/api/identify-piece', async (req, res) => {
   } catch (e) { res.status(500).json({ success: false, error: e.message }); }
 });
 
+// Health check
 app.get('/api/health', (req, res) => res.json({ success: true, timestamp: new Date().toISOString() }));
 
-initDataDir().then(() => http.createServer(app).listen(PORT, () => console.log(`✅ Serveur démarré port ${PORT}`)));
+http.createServer(app).listen(PORT, () => console.log(`✅ Serveur démarré port ${PORT}`));
