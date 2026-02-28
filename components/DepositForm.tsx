@@ -511,7 +511,7 @@ export const DepositForm: React.FC<DepositFormProps> = ({ initialData, onSubmit,
         {/* Modale caméra */}
         {showCamera && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-fadeIn">
-            <div className="bg-white dark:bg-dark-surface rounded-2xl overflow-hidden shadow-2xl w-full max-w-lg mx-4">
+            <div className="bg-white dark:bg-dark-surface rounded-2xl overflow-hidden shadow-2xl w-full max-w-3xl mx-4">
               {/* En-tête */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 dark:border-white/10">
                 <div className="flex items-center gap-2 font-semibold text-gray-900 dark:text-white">
@@ -529,7 +529,7 @@ export const DepositForm: React.FC<DepositFormProps> = ({ initialData, onSubmit,
                   ref={videoRef}
                   autoPlay
                   playsInline
-                  className="w-full max-h-80 object-cover"
+                  className="w-full max-h-screen-60 object-cover" style={{maxHeight: '60vh'}}
                 />
               </div>
 
