@@ -198,7 +198,7 @@ function App() {
               </div>
               <div className="flex items-center gap-3 bg-primary/5 px-4 py-2 rounded-full border border-primary/10 cursor-pointer hover:bg-primary/10 transition" onClick={() => setShowCO2Modal(true)}>
                 <Leaf size={14} className="text-primary" />
-                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">CO₂</span>
+                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Evaluation impact CO₂</span>
                 <span className="text-base font-bold text-primary">{totalCO2} kg</span>
               </div>
             </div>
