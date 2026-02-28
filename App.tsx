@@ -193,7 +193,7 @@ function App() {
             <div className="hidden md:flex items-center gap-3">
               <div className="flex items-center gap-3 bg-amber-50 dark:bg-amber-500/10 px-4 py-2 rounded-full border border-amber-200 dark:border-amber-500/20">
                 <Euro size={14} className="text-amber-600 dark:text-amber-400" />
-                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Évité :</span>
+                <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Montant d'achat évité :</span>
                 <span className="text-base font-bold text-amber-600 dark:text-amber-400">{totalPrixAchat.toLocaleString('fr-FR', { minimumFractionDigits: 2 })} €</span>
               </div>
               <div className="flex items-center gap-3 bg-primary/5 px-4 py-2 rounded-full border border-primary/10 cursor-pointer hover:bg-primary/10 transition" onClick={() => setShowCO2Modal(true)}>
