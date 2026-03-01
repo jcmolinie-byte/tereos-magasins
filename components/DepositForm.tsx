@@ -45,6 +45,7 @@ export const DepositForm: React.FC<DepositFormProps> = ({ initialData, onSubmit,
     longueur: undefined as number | undefined,
     largeur: undefined as number | undefined,
     hauteur: undefined as number | undefined,
+    poids: undefined as number | undefined,
   });
 
   const [customCO2, setCustomCO2] = useState<string>('');
@@ -142,6 +143,7 @@ export const DepositForm: React.FC<DepositFormProps> = ({ initialData, onSubmit,
         longueur: initialData.longueur,
         largeur: initialData.largeur,
         hauteur: initialData.hauteur,
+        poids: initialData.poids,
       });
       const cat = CATEGORIES.find(c => c.name === initialData.categorie);
       if (cat && cat.value === null) {
@@ -443,6 +445,22 @@ export const DepositForm: React.FC<DepositFormProps> = ({ initialData, onSubmit,
               />
             </div>
           </div>
+        </div>
+
+        {/* Poids */}
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-gray-700 dark:text-primary">
+            Poids (kg) <span className="font-normal text-gray-400">— optionnel</span>
+          </label>
+          <input
+            type="number"
+            min="0"
+            step="0.1"
+            className={inputClassName}
+            placeholder="ex: 12.5"
+            value={formData.poids ?? ''}
+            onChange={e => setFormData(prev => ({ ...prev, poids: e.target.value ? Number(e.target.value) : undefined }))}
+          />
         </div>
 
         <div className="space-y-2">
