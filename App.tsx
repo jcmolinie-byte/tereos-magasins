@@ -169,7 +169,7 @@ function App() {
             <button onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
-            <h1 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }} className="text-2xl text-gray-900 dark:text-white tracking-tight">Magasins-Tereos</h1>
+            <h1 style={{ fontFamily: "'Montserrat', sans-serif", fontWeight: 600 }} className="text-2xl text-gray-900 dark:text-white tracking-tight ml-4">Magasins-Tereos</h1>
             <Button variant="ghost" onClick={handleLogout} className="hidden md:flex" icon={<LogOut size={18} />}>Déconnexion</Button>
           </div>
         </div>
