@@ -12,6 +12,7 @@ export interface StockItem {
   longueur?: number;
   largeur?: number;
   hauteur?: number;
+  poids?: number;
   ownerEmail: string | null;
 }
 
