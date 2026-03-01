@@ -90,6 +90,14 @@ const InfoModal: React.FC<{ item: StockItem; onClose: () => void }> = ({ item, o
               </div>
             </div>
           )}
+
+          {/* Poids si présent */}
+          {item.poids && (
+            <div className="bg-gray-50 dark:bg-white/5 rounded-xl p-4 border border-gray-200 dark:border-white/10">
+              <p className="text-xs font-semibold text-primary uppercase tracking-wider mb-2">Poids</p>
+              <p className="text-sm text-gray-700 dark:text-gray-300 font-bold">{item.poids} kg</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
