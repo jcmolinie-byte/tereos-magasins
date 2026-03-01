@@ -165,7 +165,7 @@ function App() {
     <div className={`min-h-screen pb-20 transition-colors duration-300 ${theme === 'dark' ? 'dark' : ''}`}>
       <header className="sticky top-0 z-50 backdrop-blur-lg border-b border-gray-200 dark:border-white/5 bg-white/80 dark:bg-dark-bg/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex items-center h-16 gap-4">
             <button onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:hover:bg-white/5 transition-colors">
               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
             </button>
