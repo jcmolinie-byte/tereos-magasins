@@ -1,10 +1,10 @@
 import { CO2Category, StockItem } from './types';
 
 export const SITES = [
-  "Artenay", "Attin", "Bois‑Rouge", "Boiry‑Sainte‑Rictrude", "Bucy",
+  "Aalst","Artenay", "Attin", "Bois‑Rouge", "Boiry‑Sainte‑Rictrude", "Bucy",
   "Chevrières", "Connantre", "Escaudœuvres", "Haussimont", "Le Gol",
   "Lillebonne", "Lillers", "Marckolsheim", "Nesle",
-  "Origny‑Sainte‑Benoite", "Thumeries", "Aalst"
+  "Origny‑Sainte‑Benoite", "Thumeries",
 ];
 
 export const CATEGORIES: CO2Category[] = [
